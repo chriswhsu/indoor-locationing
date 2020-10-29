@@ -96,7 +96,6 @@ test_set_coded.iloc[:, 0:AP_COL_COUNT] = np.where(test_set_coded.iloc[:, 0:AP_CO
 
 max_test_db_val = test_set_coded.iloc[:, 0:AP_COL_COUNT].max().max()
 
-# TODO
 lg.info("Divide test set.")
 test_set_coded.iloc[:, 0:AP_COL_COUNT] = test_set_coded.iloc[:, 0:AP_COL_COUNT] / max_test_db_val
 
