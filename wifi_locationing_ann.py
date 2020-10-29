@@ -55,14 +55,10 @@ Conclusion:  Please read my "Evaluate Techniques for Wi-Fi Locationing" technica
 """
 
 ###############
-# Housekeeping
-###############
-reset
-
-
-###############
 # Imports
 ################
+import os
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -70,7 +66,6 @@ import time
 import glob
 import math
 import keras
-import winsound
 import h5py
 from keras.models import Sequential
 from keras.models import load_model
@@ -332,7 +327,7 @@ del train_val_set_PUND, test_set_PUND, dummy, X_train_val, y_train_val
 hyperparameters = {'epochs': 100, # SGD hyperparameter
                    'batch_size': 800, # SGD hyperparameter
                    'hidden_layers': 1,
-                   'neurons': 1600, # neurons per hidden layer
+                   'neurons': 1700, # neurons per hidden layer
                    'lambd': None, # L2 regularization term
                    'dropout': None} # dropout probability for dropout regularization
 
@@ -414,8 +409,6 @@ classifier.fit(X_train, y_train.iloc[:, 10:2005],
                  shuffle = True) # shuffle training data before each epoch
 toc = time.time()
 run_time = (toc - tic)/60
-winsound.Beep(frequency = 1500, duration = 2000) 
-
 
 
 # training set performance
@@ -443,11 +436,11 @@ with open('tuning_ann.csv', 'a') as f:
 
 # save best model 
 def save_model(model, model_name):
-    model_name_present = glob.glob(model_name) # boolean, same model name already present?
-    if not model_name_present:
-        classifier.save(model_name)
-    else:
-        print('WARNING: This file already exists.')
+    model_name_present = glob.glob(model_name)
+    if model_name_present:
+        os.remove(model_name_present[0])
+    model.save(model_name)
+
 
 save_model(classifier, 'ann_model.h5')
 
