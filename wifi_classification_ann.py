@@ -65,10 +65,9 @@ unique_locations = len(combined["UNIQUELOCATION"].unique())
 lg.info("{0} unique locations".format(unique_locations))
 
 # split again
+lg.info("Split Data back into two sets.")
 train_val_set_coded = combined.iloc[0:train_length, :]
 test_set_coded = combined.iloc[train_length:, :].copy()
-
-lg.info("Split Data back into two sets.")
 
 # Since UNIQUELOCATION is a multi-class label... 
 dummy = keras.utils.to_categorical(train_val_set_coded['UNIQUELOCATION'], num_classes=unique_locations)
