@@ -82,22 +82,17 @@ lg.info("Finished setting up training set")
 
 # -------------------------------- test set -----------------------------------#
 
-# Fingerprint data representation
-min_test_db_val = train_val_set_coded.iloc[:, 0:AP_COL_COUNT].min().min()
-lg.info("Minimum test db Value: {0}".format(min_test_db_val))
-
 lg.info("Scale Test Set")
 test_set_coded.iloc[:, 0:AP_COL_COUNT] = np.where(test_set_coded.iloc[:, 0:AP_COL_COUNT] <= 0,
-                                                  test_set_coded.iloc[:, 0:AP_COL_COUNT] + abs(min_test_db_val) + 1,
+                                                  test_set_coded.iloc[:, 0:AP_COL_COUNT] + abs(min_train_db_val) + 1,
                                                   test_set_coded.iloc[:, 0:AP_COL_COUNT] - 100)
 
 # Feature Scaling - do not center - destroys sparse structure of this data. 
 # Normalize the WAPs by dividing by 105. Speeds up gradient descent.
 
-max_test_db_val = test_set_coded.iloc[:, 0:AP_COL_COUNT].max().max()
 
 lg.info("Divide test set.")
-test_set_coded.iloc[:, 0:AP_COL_COUNT] = test_set_coded.iloc[:, 0:AP_COL_COUNT] / max_test_db_val
+test_set_coded.iloc[:, 0:AP_COL_COUNT] = test_set_coded.iloc[:, 0:AP_COL_COUNT] / max_pos_db_value
 
 # Since UNIQUELOCATION is a multi-class label...
 dummy = keras.utils.to_categorical(test_set_coded['UNIQUELOCATION'], num_classes=unique_locations)
@@ -124,10 +119,9 @@ ref_table = ref_table.drop_duplicates()
 # --- save data ---#
 def save_data(dataframe, filename):
     file_present = glob.glob(filename)  # boolean, file already present?
-    if not file_present:
-        dataframe.to_csv(filename)
-    else:
-        print('WARNING: This file already exists.')
+    if file_present:
+        os.remove(file_present[0])
+    dataframe.to_csv(filename)
 
 
 save_data(X_train, 'X_train_ann.csv')
